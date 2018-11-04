@@ -2,9 +2,49 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>$Title$</title>
+    <title>Title</title>
+    <script type="text/javascript">
+        var  socket;
+        if(window.WebSocket){
+            socket = new WebSocket("ws://localhost:892/ws");
+            socket.onmessage=function (ev) {
+                var res = document.getElementById('responseText');
+                res.value = res.value + "\n"+ ev.data;
+            }
+            socket.onopen=function (ev) {
+                var res = document.getElementById('responseText');
+                res.value ="连接开启";
+            }
+            socket.onclose=function (ev) {
+                var res = document.getElementById('responseText');
+                res.value = res.value +"\n连接关闭";
+            }
+        }else{
+            alert("浏览器不支持WebSocket");
+        }
+        function  send(message){
+            alert(message);
+           if(Window.WebSocket){
+                return;
+            }
+            if(socket.readyState==WebSocket.OPEN){
+                socket.send(message);
+            }else{
+                alert("连接尚未开启");
+            }
+        }
+    </script>
 </head>
 <body>
-$END$
+<form onsubmit="return false;">
+<textarea name="message" style="width: 400px;height: 500px">
+</textarea>
+    <input type="button" value="push data" onclick="send(this.form.message.value)">
+    <h3>server response</h3>
+<textarea id="responseText" style="width: 400px;height: 500px">
+</textarea>
+    <input type="button" value="push data" onclick="javascript: document.getElementById('responseText').value=''" value="清空内容"/>
+
+</form>
 </body>
 </html>
